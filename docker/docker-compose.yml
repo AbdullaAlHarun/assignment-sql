@@ -1,0 +1,28 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: asql-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: LibraryDB
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+      TZ: Europe/Oslo
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql/init:/docker-entrypoint-initdb.d:ro
+      - ./mysql/data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  adminer:
+    image: adminer
+    container_name: asql-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
