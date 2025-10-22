@@ -31,3 +31,14 @@ ORDER BY TotalBooks DESC, TotalMovies DESC, a.LastName ASC, a.FirstName ASC;
 
 
 #Question 2.1.3 Solution
+USE LibraryDB;
+SELECT
+  b.BookID,
+  b.Title
+FROM Books b
+JOIN Media m ON m.BookID = b.BookID
+WHERE b.Title LIKE '%I%'
+  AND m.MediaType IN ('Audiobook', 'Movie')
+GROUP BY b.BookID, b.Title
+HAVING COUNT(DISTINCT m.MediaType) = 2
+ORDER BY b.Title;
