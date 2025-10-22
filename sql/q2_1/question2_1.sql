@@ -164,3 +164,24 @@ WHERE b.Title='Dune'
 -- ─────────────────────────────────────────────────────────────────────────────
 #Question 2.1.5 Solution
 -- ─────────────────────────────────────────────────────────────────────────────
+USE LibraryDB;
+
+WITH
+  first_tolkien AS (
+    SELECT MIN(b.PublishYear) AS y
+    FROM Authors a
+    JOIN Books b ON b.AuthorID = a.AuthorID
+    WHERE a.LastName = 'Tolkien'   -- handles J.R.R. Tolkien
+  ),
+  last_hp_movie AS (
+    SELECT MAX(m.ReleaseYear) AS y
+    FROM Books b
+    JOIN Media m ON m.BookID = b.BookID
+    WHERE m.MediaType = 'Movie'
+      AND b.Title LIKE 'Harry Potter%'   -- all HP titles
+  )
+SELECT
+  ft.y  AS FirstTolkienYear,
+  hp.y  AS LastHPMovieYear,
+  (hp.y - ft.y) AS YearDifference
+FROM first_tolkien ft, last_hp_movie hp;
