@@ -63,7 +63,7 @@ def main():
 
         again = input("\nRoll again? (y/n): ").strip().lower()
         if again != "y":
-            print("\nThanks for playing! 🎉")
+            print("\nThanks for playing!")
             break
 
 
