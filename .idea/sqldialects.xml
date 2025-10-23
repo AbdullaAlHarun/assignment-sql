@@ -4,6 +4,6 @@
     <file url="file://$PROJECT_DIR$/docker/mysql/init/init_db_corrected.sql" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/sql/q2_1/question2_1.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/sql/q2_2/vetdb_init.sql" dialect="MySQL" />
-    <file url="file://$PROJECT_DIR$/sql/q2_2/vetdb_ops.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/sql/q2_2/vetdb_ops.sql" dialect="MySQL" />
   </component>
 </project>

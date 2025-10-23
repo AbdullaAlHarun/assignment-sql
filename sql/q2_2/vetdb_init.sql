@@ -103,3 +103,89 @@ CREATE TABLE AnimalProcedures (
 -- Helpful indexes
 CREATE INDEX idx_animals_owner ON Animals(owner_id);
 CREATE INDEX idx_ap_date       ON AnimalProcedures(procedure_date);
+
+
+-- Question 2.2.2 — SAMPLE DATA
+
+
+USE VetDB;
+
+-- Addresses
+INSERT INTO Addresses (line1, line2, city, postal_code, country) VALUES
+('Storgata 12', NULL, 'Oslo', '0155', 'Norway'),
+('Parkveien 44', 'Apt 3B', 'Oslo', '0258', 'Norway'),
+('Fjellveien 9', NULL, 'Bergen', '5019', 'Norway'),
+('Kirkegata 2', NULL, 'Trondheim', '7011', 'Norway'),
+('Strandgata 77', NULL, 'Tromsø', '9008', 'Norway');
+
+-- Owners (Customers)
+INSERT INTO Owners (first_name, last_name, phone, email, address_id) VALUES
+('Emma','Larsen','+47 400 000 01','emma.larsen@example.com', 1),
+('Jon','Haugen','+47 400 000 02','jon.haugen@example.com', 2),
+('Sara','Nilsen','+47 400 000 03','sara.nilsen@example.com', 3),
+('Mats','Solberg','+47 400 000 04','mats.solberg@example.com', 4),
+('Aisha','Ahmed','+47 400 000 05','aisha.ahmed@example.com', 5);
+
+-- Species
+INSERT INTO Species (common_name) VALUES
+('Dog'), ('Cat'), ('Rabbit'), ('Parrot');
+
+-- Staff
+INSERT INTO Staff (first_name, last_name, role, hired_date, retired_date, active) VALUES
+('Lina','Berg','Vet','2020-03-01',NULL,1),
+('Oskar','Dahl','Nurse','2021-06-15',NULL,1),
+('Hanna','Krog','Assistant','2022-01-10',NULL,1),
+('Per','Andresen','Reception','2019-09-01',NULL,1);
+
+-- Procedures (catalog)
+INSERT INTO Procedures (name, base_price, description) VALUES
+('Checkup',            750.00, 'Routine health check'),
+('Vaccination',        890.00, 'Core vaccination'),
+('Dental Cleaning',   1800.00, 'Scaling and polishing'),
+('Minor Surgery',     3500.00, 'Outpatient minor procedure'),
+('Major Surgery',     9500.00, 'Inpatient major procedure');
+
+-- Animals
+INSERT INTO Animals (name, date_of_birth, sex, owner_id, species_id) VALUES
+('Luna','2021-05-12','F', 1, (SELECT species_id FROM Species WHERE common_name='Dog')),
+('Milo','2020-11-03','M', 2, (SELECT species_id FROM Species WHERE common_name='Cat')),
+('Nugget','2022-04-20','M', 3, (SELECT species_id FROM Species WHERE common_name='Rabbit')),
+('Kiki','2019-08-08','F', 4, (SELECT species_id FROM Species WHERE common_name='Parrot')),
+('Thor','2018-02-14','M', 5, (SELECT species_id FROM Species WHERE common_name='Dog'));
+
+-- AnimalProcedures (performed)
+INSERT INTO AnimalProcedures (animal_id, procedure_id, staff_id, procedure_date, notes, price_charged) VALUES
+-- Luna (Dog) - Checkup & Vaccination
+((SELECT animal_id FROM Animals WHERE name='Luna'),
+ (SELECT procedure_id FROM Procedures WHERE name='Checkup'),
+ (SELECT staff_id FROM Staff WHERE first_name='Lina' AND last_name='Berg'),
+ '2024-03-12','Annual checkup', 750.00),
+
+((SELECT animal_id FROM Animals WHERE name='Luna'),
+ (SELECT procedure_id FROM Procedures WHERE name='Vaccination'),
+ (SELECT staff_id FROM Staff WHERE first_name='Oskar' AND last_name='Dahl'),
+ '2024-03-12','DHPPi booster', 890.00),
+
+-- Milo (Cat) - Dental Cleaning
+((SELECT animal_id FROM Animals WHERE name='Milo'),
+ (SELECT procedure_id FROM Procedures WHERE name='Dental Cleaning'),
+ (SELECT staff_id FROM Staff WHERE first_name='Lina' AND last_name='Berg'),
+ '2024-06-01','Tartar grade 2', 1800.00),
+
+-- Nugget (Rabbit) - Checkup
+((SELECT animal_id FROM Animals WHERE name='Nugget'),
+ (SELECT procedure_id FROM Procedures WHERE name='Checkup'),
+ (SELECT staff_id FROM Staff WHERE first_name='Hanna' AND last_name='Krog'),
+ '2025-02-18','Weight check and diet advice', 750.00),
+
+-- Kiki (Parrot) - Minor Surgery
+((SELECT animal_id FROM Animals WHERE name='Kiki'),
+ (SELECT procedure_id FROM Procedures WHERE name='Minor Surgery'),
+ (SELECT staff_id FROM Staff WHERE first_name='Lina' AND last_name='Berg'),
+ '2023-11-20','Wing injury repair', 3600.00),
+
+-- Thor (Dog) - Major Surgery
+((SELECT animal_id FROM Animals WHERE name='Thor'),
+ (SELECT procedure_id FROM Procedures WHERE name='Major Surgery'),
+ (SELECT staff_id FROM Staff WHERE first_name='Lina' AND last_name='Berg'),
+ '2022-09-05','Cruciate ligament repair', 9800.00);
